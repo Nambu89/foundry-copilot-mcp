@@ -1,0 +1,6 @@
+# Pinned on purpose. mcp 2.0 moved `mcp.server.fastmcp.FastMCP` and breaks startup;
+# verified working with mcp 1.28.1. The upper bounds stop a future install from silently
+# picking an incompatible major. Re-verify the imports before relaxing them.
+mcp>=1.28.1,<2
+azure-ai-projects>=2.3.0,<3
+azure-identity>=1.19.0,<2

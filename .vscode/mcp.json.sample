@@ -1,0 +1,28 @@
+{
+  "// how to use": [
+    "Copy this file to .vscode/mcp.json and fill in your own values.",
+    "mcp.json is gitignored on purpose: it holds your endpoint and paths.",
+    "Then, in VS Code: Copilot Chat -> Agent mode -> the tools appear automatically."
+  ],
+  "servers": {
+    "foundry-copilot-mcp": {
+      "type": "stdio",
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["-m", "foundry_mcp.server"],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src",
+        "PYTHONIOENCODING": "utf-8",
+
+        "// Foundry": "Your project endpoint and the agent name, both from the Foundry portal.",
+        "FOUNDRY_PROJECT_ENDPOINT": "https://<your-resource>.services.ai.azure.com/api/projects/<your-project>",
+        "FOUNDRY_AGENT_NAME": "<your-agent-name>",
+
+        "// Power BI": "Optional. Defaults to the official server, read-only. Needs Node.js.",
+        "PBI_MCP_COMMAND": "npx -y @microsoft/powerbi-modeling-mcp --read-only",
+
+        "// Fabric": "Optional. Only if the workspace lives in a different tenant than your az login.",
+        "FABRIC_TENANT_ID": ""
+      }
+    }
+  }
+}

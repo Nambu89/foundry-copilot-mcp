@@ -1,0 +1,71 @@
+/// Fact table. Deliberately small, and deliberately imperfect: the measures below include
+/// the mistakes these tools are meant to find.
+table Sales
+
+	column OrderId
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: OrderId
+
+	column OrderDate
+		dataType: dateTime
+		formatString: General Date
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+	column CustomerId
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: CustomerId
+
+	column Amount
+		dataType: decimal
+		formatString: #,0.00
+		summarizeBy: sum
+		sourceColumn: Amount
+
+	column Cost
+		dataType: decimal
+		formatString: #,0.00
+		summarizeBy: sum
+		sourceColumn: Cost
+
+	/// Inline form: expression on the same line as the declaration.
+	measure 'Total Sales' = SUM(Sales[Amount])
+		formatString: #,0.00
+
+	/// Block form: the expression lives between fences. Both shapes appear in real models,
+	/// which is why the parser has to handle each of them.
+	measure 'Total Cost' =
+			```
+			SUMX(
+			    Sales,
+			    Sales[Cost]
+			)
+			```
+		formatString: #,0.00
+
+	measure Profit = [Total Sales] - [Total Cost]
+		formatString: #,0.00
+
+	/// A percentage with no percentage format: exactly the kind of thing worth flagging.
+	measure 'Margin %' =
+			```
+			DIVIDE([Profit], [Total Sales])
+			```
+
+	/// Same calculation as 'Total Sales' under a different name — a duplicate hiding in plain
+	/// sight. Models accumulate these, and they are how two reports end up disagreeing.
+	measure Revenue = SUM(Sales[Amount])
+		formatString: #,0.00
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+				    Source = #table(
+				        type table [OrderId = Int64.Type, OrderDate = date, CustomerId = Int64.Type, Amount = Currency.Type, Cost = Currency.Type],
+				        {}
+				    )
+				in
+				    Source

@@ -1,0 +1,31 @@
+[project]
+name = "foundry-copilot-mcp"
+version = "0.1.0"
+description = "Bring a Microsoft Foundry agent and your Power BI models into GitHub Copilot Chat, over MCP."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Fernando Prada Gorge" }]
+keywords = ["mcp", "model-context-protocol", "azure", "microsoft-foundry", "power-bi", "copilot"]
+dependencies = [
+    "mcp>=1.28.1,<2",
+    "azure-ai-projects>=2.3.0,<3",
+    "azure-identity>=1.19.0,<2",
+]
+
+[project.urls]
+Homepage = "https://github.com/Nambu89/foundry-copilot-mcp"
+
+[project.scripts]
+foundry-copilot-mcp = "foundry_mcp.server:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
