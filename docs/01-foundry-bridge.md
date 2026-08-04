@@ -12,6 +12,26 @@ Then you try to put it in front of people, and the playground stops being the an
 
 Option 3 is what this bridge does, and MCP is what makes it small.
 
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as Analyst
+    participant V as VS Code · Copilot Chat
+    participant S as foundry-copilot-mcp
+    participant F as Microsoft Foundry
+
+    U->>V: "ask the agent about X"
+    V->>S: MCP tool call · ask_agent_tool
+    Note over S: DefaultAzureCredential<br/>= the analyst's own az login
+    S->>F: responses.create(input=prompt)
+    Note over F: instructions, tools and model<br/>deployment all live here —<br/>the client sends none of them
+    F-->>S: output_text
+    S-->>V: plain prose
+    V-->>U: the answer, in the editor
+```
+
+Note what the client never sends: no model name, no system prompt, no tool definitions. Change the agent in the portal and step 4 picks it up on the next message.
+
 ## The code
 
 ```python

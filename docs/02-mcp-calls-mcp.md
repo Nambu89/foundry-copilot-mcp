@@ -30,6 +30,35 @@ with StdioMcpClient("npx -y @microsoft/powerbi-modeling-mcp --read-only") as mcp
     result = mcp.call_tool("model_operations", {"request": {...}})
 ```
 
+What those three lines actually put on the wire:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant T as our tool
+    participant C as StdioMcpClient
+    participant M as Microsoft's PBI MCP server<br/>(child process)
+
+    Note over C,M: launched with --read-only:<br/>the policy lives in our process
+    T->>C: initialize()
+    C->>M: initialize · id 1
+    M-->>C: result · id 1
+    C->>M: notifications/initialized
+    Note right of C: a notification carries no id<br/>and gets no reply — do not wait
+
+    T->>C: call_tool("connection_operations")
+    C->>M: tools/call · id 2
+    M--)C: notifications/message · log noise
+    M-->>C: result · id 2
+    Note right of C: match on the id — the answer is<br/>not necessarily the next line
+
+    T->>C: call_tool("model_operations", ExportTMDL)
+    C->>M: tools/call · id 3
+    M-->>C: result · id 3 · embedded resource
+    Note right of C: big payloads arrive as a resource,<br/>not as text content
+    C-->>T: the model's TMDL
+```
+
 Under that, four things bite.
 
 ### 1. The handshake has two steps, and the second gets no reply

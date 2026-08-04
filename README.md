@@ -4,18 +4,10 @@ Bring a **Microsoft Foundry** agent — and your **Power BI** semantic models �
 
 Your agent already works in the Foundry playground. Your analysts already live in VS Code. This is the ~400 lines of glue in between, written to be read: three bridges, each one small enough to hold in your head.
 
-```text
-   VS Code / Copilot Chat  (the user is already here)
-            │  MCP over stdio
-            ▼
-   ┌────────────────────────────────┐
-   │      this server               │
-   ├────────────────────────────────┤
-   │ 1. Foundry bridge  ────────────┼──►  your agent in Microsoft Foundry
-   │ 2. MCP client      ────────────┼──►  Microsoft's Power BI modeling MCP server
-   │ 3. Fabric REST     ────────────┼──►  Fabric API (GUID → display name)
-   └────────────────────────────────┘
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/architecture-dark.svg">
+  <img alt="VS Code Copilot Chat talks over MCP to this server, which bridges to Microsoft Foundry, to Microsoft's Power BI modeling MCP server, and to the Fabric REST API. Every call runs as the signed-in user." src="docs/img/architecture.svg" width="100%">
+</picture>
 
 Everything runs as **the signed-in user**, never a service principal. That is a design decision, not an omission — see [Security](#security).
 

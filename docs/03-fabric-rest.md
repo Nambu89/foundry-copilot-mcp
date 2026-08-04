@@ -20,6 +20,19 @@ Two GUIDs, no names anywhere. "Open the settings blade and copy the display name
 
 ## Resolving it
 
+```mermaid
+flowchart LR
+    A["what the user pastes:<br/>a Fabric URL"] --> B{"GUID<br/>or name?"}
+    B -->|"already a name"| E
+    B -->|"GUID"| C["GET /v1/workspaces/id<br/>GET /v1/workspaces/id/items/id"]
+    C --> D{"200?"}
+    D -->|"yes"| E["display names"]
+    D -->|"404"| F["wrong tenant.<br/>set FABRIC_TENANT_ID,<br/>or pass the name instead"]
+    E --> G["ConnectFabric<br/>workspaceName + semanticModelName"]
+
+    style F stroke-dasharray: 4 4
+```
+
 ```text
 GET https://api.fabric.microsoft.com/v1/workspaces/{id}            -> displayName
 GET https://api.fabric.microsoft.com/v1/workspaces/{id}/items/{id} -> displayName
